@@ -1,9 +1,9 @@
 //
 //  ShareViewController.swift
-//  ImageShare
+//  BetterestExtension
 //
-//  Created by Abhishek on 19/09/17.
-//  Copyright © 2017 Nickelfox. All rights reserved.
+//  Created by Umar Qattan on 10/3/2018
+//  Copyright © 2018 ukaton. All rights reserved.
 //
 
 import UIKit
@@ -13,6 +13,9 @@ import MobileCoreServices
 class ShareViewController: UIViewController {
     
     let sharedKey = "ImageSharePhotoKey"
+    
+    fileprivate let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
+    fileprivate let itemsPerRow = CGFloat(5)
     
     var selectedImages: [UIImage] = []
     var imagesData: [Data] = []
@@ -30,47 +33,6 @@ class ShareViewController: UIViewController {
         self.navigationItem.title = "Picked Images"
         self.manageImages()
     }
-
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.willTransition(to: newCollection, with: coordinator)
-        
-        let layout = UICollectionViewFlowLayout()
-        var width = CGFloat()
-        
-        if newCollection.horizontalSizeClass == .regular {
-            layout.scrollDirection = .horizontal
-            width = imgCollectionView.frame.size.width / 3
-
-        } else {
-            let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .vertical
-            width = imgCollectionView.frame.size.width - 10
-        }
-        
-        layout.itemSize = CGSize(width: width, height: width)
-        self.imgCollectionView.collectionViewLayout = layout
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        let layout = UICollectionViewFlowLayout()
-        var width = CGFloat()
-        
-        if self.traitCollection.horizontalSizeClass == .regular {
-            layout.scrollDirection = .horizontal
-            width = imgCollectionView.frame.size.width / 3
-            
-        } else {
-            let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .vertical
-            width = imgCollectionView.frame.size.width - 10
-        }
-        
-        layout.itemSize = CGSize(width: width, height: width)
-        self.imgCollectionView.collectionViewLayout = layout
-    }
-    
     
     @IBAction func nextAction(_ sender: Any) {
         self.redirectToHostApp()
@@ -153,28 +115,22 @@ class ShareViewController: UIViewController {
 
 extension ShareViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//        if self.traitCollection.horizontalSizeClass == .regular {
-//            collectionViewLayout.la
-//            return CGSize(width: (imgCollectionView.frame.size.width)/6, height: (imgCollectionView.frame.size.width)/6)
-//        } else {
-//            return CGSize(width: (imgCollectionView.frame.size.width)/2/2, height: (imgCollectionView.frame.size.width)/2.2)
-//        }
-//
-//    }
-    
-    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let paddingSpace = self.sectionInsets.left * (self.itemsPerRow + 1)
+        let availableWidth = self.view.bounds.width - paddingSpace
+        let widthPerItem = availableWidth / self.itemsPerRow
+        
+        return CGSize(width: widthPerItem, height: widthPerItem)
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        
-        if self.traitCollection.horizontalSizeClass == .regular {
-            return UIEdgeInsets(top: self.view.layoutMargins.top, left: 0, bottom: self.view.layoutMargins.bottom, right: 0)
-        } else {
-            return UIEdgeInsets(top: 0, left: self.view.layoutMargins.left, bottom: 0, right: self.view.layoutMargins.right)
-        }
+        return self.sectionInsets
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return self.sectionInsets.left
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -188,6 +144,7 @@ extension ShareViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ShareImageCollectionCell", for: indexPath) as! ShareImageCollectionCell
         cell.configure(image: selectedImages[indexPath.row])
+        cell.layoutIfNeeded()
         return cell
     }
 }
