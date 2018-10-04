@@ -10,6 +10,8 @@
 		323E9C4BD29C6DEB4A3DF02A /* Pods_Betterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDB8476071D6A9C22220D32F /* Pods_Betterest.framework */; };
 		E10614E821601939006924AE /* Pods_Betterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E10614E721601939006924AE /* Pods_Betterest.framework */; };
 		E10614FD216177F0006924AE /* AppUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10614FC216177F0006924AE /* AppUtility.swift */; };
+		E11BD1DE21686B0300302CB9 /* ShareExtensionStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1DD21686B0300302CB9 /* ShareExtensionStyler.swift */; };
+		E11BD1E021686D8D00302CB9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1DF21686D8D00302CB9 /* Extensions.swift */; };
 		E16217B521463BD60076B088 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217B421463BD60076B088 /* Extensions.swift */; };
 		E16217B721463C590076B088 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217B621463C590076B088 /* Keys.swift */; };
 		E16217B921463DF90076B088 /* BestestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217B821463DF90076B088 /* BestestViewController.swift */; };
@@ -70,6 +72,8 @@
 		E10614F021601C14006924AE /* BetterestKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BetterestKit.h; sourceTree = "<group>"; };
 		E10614F121601C14006924AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E10614FC216177F0006924AE /* AppUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUtility.swift; sourceTree = "<group>"; };
+		E11BD1DD21686B0300302CB9 /* ShareExtensionStyler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionStyler.swift; sourceTree = "<group>"; };
+		E11BD1DF21686D8D00302CB9 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E16217B421463BD60076B088 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E16217B621463C590076B088 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		E16217B821463DF90076B088 /* BestestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BestestViewController.swift; sourceTree = "<group>"; };
@@ -149,6 +153,8 @@
 				E1A18113214F388800E981E2 /* ShareImageCollectionCell.swift */,
 				E1A18103214ED54A00E981E2 /* MainInterface.storyboard */,
 				E1A18106214ED54A00E981E2 /* Info.plist */,
+				E11BD1DD21686B0300302CB9 /* ShareExtensionStyler.swift */,
+				E11BD1DF21686D8D00302CB9 /* Extensions.swift */,
 			);
 			path = BetterestExtension;
 			sourceTree = "<group>";
@@ -361,8 +367,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E11BD1DE21686B0300302CB9 /* ShareExtensionStyler.swift in Sources */,
 				E1A18102214ED54A00E981E2 /* ShareViewController.swift in Sources */,
 				E1A18115214F388800E981E2 /* ShareImageCollectionCell.swift in Sources */,
+				E11BD1E021686D8D00302CB9 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

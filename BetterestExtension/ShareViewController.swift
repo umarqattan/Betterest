@@ -1,9 +1,9 @@
 //
 //  ShareViewController.swift
-//  ImageShare
+//  BetterestExtension
 //
-//  Created by Abhishek on 19/09/17.
-//  Copyright © 2017 Nickelfox. All rights reserved.
+//  Created by Umar Qattan on 10/3/2018
+//  Copyright © 2018 ukaton. All rights reserved.
 //
 
 import UIKit
@@ -17,66 +17,71 @@ class ShareViewController: UIViewController {
     var selectedImages: [UIImage] = []
     var imagesData: [Data] = []
     
-    @IBOutlet weak var imgCollectionView: UICollectionView!
-
+    var numberOfRotations = 0
+    
+    private lazy var selectedPhotosCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+        collectionView.register(ShareImageCollectionCell.self, forCellWithReuseIdentifier: "ShareImageCollectionCell")
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = UIColor.white
+        
+        return collectionView
+    }()
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        debugPrint("Rotation: \(self.numberOfRotations)")
+        self.numberOfRotations += 1
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
-        self.imgCollectionView.delegate = self
-        self.imgCollectionView.dataSource = self
-        
-        self.navigationItem.title = "Picked Images"
-        self.manageImages()
-    }
+        debugPrint("Rotation: \(self.numberOfRotations)")
 
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.willTransition(to: newCollection, with: coordinator)
-        
-        let layout = UICollectionViewFlowLayout()
-        var width = CGFloat()
-        
-        if newCollection.horizontalSizeClass == .regular {
-            layout.scrollDirection = .horizontal
-            width = imgCollectionView.frame.size.width / 3
 
-        } else {
-            let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .vertical
-            width = imgCollectionView.frame.size.width - 10
-        }
         
-        layout.itemSize = CGSize(width: width, height: width)
-        self.imgCollectionView.collectionViewLayout = layout
+        self.view.backgroundColor = UIColor.white
+        self.setupViews()
+        self.applyConstraints()
+    
+        self.navigationItem.title = "Selected Images"
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelAction(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(nextAction(_:)))
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        let layout = UICollectionViewFlowLayout()
-        var width = CGFloat()
-        
-        if self.traitCollection.horizontalSizeClass == .regular {
-            layout.scrollDirection = .horizontal
-            width = imgCollectionView.frame.size.width / 3
-            
-        } else {
-            let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .vertical
-            width = imgCollectionView.frame.size.width - 10
-        }
-        
-        layout.itemSize = CGSize(width: width, height: width)
-        self.imgCollectionView.collectionViewLayout = layout
+    func setupViews() {
+        self.view.addSubview(self.selectedPhotosCollectionView)
     }
     
+    func applyConstraints() {
+        NSLayoutConstraint.activate([
+                self.selectedPhotosCollectionView.topAnchor.constraint(equalTo: self.view.topAnchor),
+                self.selectedPhotosCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                self.selectedPhotosCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+                self.selectedPhotosCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+        ])
+    }
     
-    @IBAction func nextAction(_ sender: Any) {
+    @objc func nextAction(_ sender: Any) {
         self.redirectToHostApp()
     }
     
-    @IBAction func cancelAction(_ sender: Any) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.selectedPhotosCollectionView.delegate = self
+        self.selectedPhotosCollectionView.dataSource = self
+        
+        self.manageImages()
+    }
+    
+    @objc func cancelAction(_ sender: Any) {
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
     
@@ -114,7 +119,7 @@ class ShareViewController: UIViewController {
                             // CONVERTED INTO FORMATTED FILE : OVER COME MEMORY WARNING
                             // YOU USE SCALE PROPERTY ALSO TO REDUCE IMAGE SIZE
                             
-                            let image = UIImage.resizeImage(image: rawImage!, width: 500, height: 500)
+                            let image = UIImage.scaleImage(image: rawImage!, maxDimension: 500)
                             let imgData = image.pngData()
                             
                             this.selectedImages.append(image)
@@ -122,7 +127,7 @@ class ShareViewController: UIViewController {
                             
                             if index == (content.attachments?.count)! - 1 {
                                 DispatchQueue.main.async {
-                                    this.imgCollectionView.reloadData()
+                                    this.selectedPhotosCollectionView.reloadData()
                                     let userDefaults = UserDefaults(suiteName: "group.ukaton.Betterest")
                                     userDefaults?.set(this.imagesData, forKey: this.sharedKey)
                                     userDefaults?.synchronize()
@@ -148,38 +153,17 @@ class ShareViewController: UIViewController {
             }
         }
     }
-    
 }
 
 extension ShareViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//        if self.traitCollection.horizontalSizeClass == .regular {
-//            collectionViewLayout.la
-//            return CGSize(width: (imgCollectionView.frame.size.width)/6, height: (imgCollectionView.frame.size.width)/6)
-//        } else {
-//            return CGSize(width: (imgCollectionView.frame.size.width)/2/2, height: (imgCollectionView.frame.size.width)/2.2)
-//        }
-//
-//    }
-    
-    
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        if self.traitCollection.horizontalSizeClass == .regular {
-            return UIEdgeInsets(top: self.view.layoutMargins.top, left: 0, bottom: self.view.layoutMargins.bottom, right: 0)
-        } else {
-            return UIEdgeInsets(top: 0, left: self.view.layoutMargins.left, bottom: 0, right: self.view.layoutMargins.right)
-        }
+        return Styler.SelectedPhotosCollectionView.cellSize(collectionView.frame)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-    }
+
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.selectedImages.count
@@ -190,6 +174,14 @@ extension ShareViewController: UICollectionViewDelegate, UICollectionViewDataSou
         cell.configure(image: selectedImages[indexPath.row])
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
 }
 
 extension UIImage {
@@ -199,5 +191,28 @@ extension UIImage {
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImage!
+    }
+    
+    class func scaleImage(image: UIImage, maxDimension: CGFloat) -> UIImage {
+        
+        var scaledSize = CGSize(width: maxDimension, height: maxDimension)
+        var scaleFactor: CGFloat
+        
+        if image.size.width > image.size.height {
+            scaleFactor = image.size.height / image.size.width
+            scaledSize.width = maxDimension
+            scaledSize.height = scaledSize.width * scaleFactor
+        } else {
+            scaleFactor = image.size.width / image.size.height
+            scaledSize.height = maxDimension
+            scaledSize.width = scaledSize.height * scaleFactor
+        }
+        
+        UIGraphicsBeginImageContext(scaledSize)
+        image.draw(in: CGRect(x: 0, y: 0, width: scaledSize.width, height: scaledSize.height))
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return scaledImage ?? image
     }
 }

@@ -20,66 +20,10 @@
                     <view key="view" opaque="NO" contentMode="scaleToFill" id="QTN-Gw-PBM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="2cj-WW-kx8">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" sectionInsetReference="safeArea" id="CJ8-hR-gV3">
-                                    <size key="itemSize" width="50" height="50"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ShareImageCollectionCell" id="FEb-hZ-o4z" customClass="ShareImageCollectionCell" customModule="BetterestExtension">
-                                        <rect key="frame" x="10" y="10" width="50" height="50"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="b77-dz-h5i">
-                                                    <rect key="frame" x="0.0" y="0.0" width="1" height="1"/>
-                                                </imageView>
-                                            </subviews>
-                                        </view>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="b77-dz-h5i" secondAttribute="trailing" id="4oh-kW-VyK"/>
-                                            <constraint firstAttribute="bottom" secondItem="b77-dz-h5i" secondAttribute="bottom" id="DTM-Sa-Xqb"/>
-                                            <constraint firstItem="b77-dz-h5i" firstAttribute="top" secondItem="FEb-hZ-o4z" secondAttribute="top" id="Vw5-G6-g64"/>
-                                            <constraint firstItem="b77-dz-h5i" firstAttribute="leading" secondItem="FEb-hZ-o4z" secondAttribute="leading" id="hZ2-Kh-Hou"/>
-                                        </constraints>
-                                        <connections>
-                                            <outlet property="imageView" destination="b77-dz-h5i" id="rWO-Vz-3zf"/>
-                                        </connections>
-                                    </collectionViewCell>
-                                </cells>
-                            </collectionView>
-                        </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="2cj-WW-kx8" firstAttribute="trailing" secondItem="1Oh-a3-Mno" secondAttribute="trailing" id="7Qf-MX-NT3"/>
-                            <constraint firstItem="2cj-WW-kx8" firstAttribute="top" secondItem="QTN-Gw-PBM" secondAttribute="top" id="ABz-GL-cKf"/>
-                            <constraint firstItem="2cj-WW-kx8" firstAttribute="leading" secondItem="1Oh-a3-Mno" secondAttribute="leading" id="IRa-Tu-YFi"/>
-                            <constraint firstItem="gea-3v-SMn" firstAttribute="top" secondItem="2cj-WW-kx8" secondAttribute="bottom" id="o0W-g1-Fgp"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="1Oh-a3-Mno"/>
                     </view>
-                    <navigationItem key="navigationItem" id="FPk-AZ-Jla">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="TuG-co-82O">
-                            <connections>
-                                <action selector="cancelAction:" destination="IaJ-Bd-R67" id="LqA-Vm-4GW"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Next" id="7Ke-aH-0NH">
-                            <connections>
-                                <action selector="nextAction:" destination="IaJ-Bd-R67" id="FHg-vm-Sae"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="imgCollectionView" destination="2cj-WW-kx8" id="EZk-uy-2Z9"/>
-                    </connections>
+                    <navigationItem key="navigationItem" id="FPk-AZ-Jla"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6rl-JW-t5P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

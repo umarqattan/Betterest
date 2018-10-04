@@ -27,7 +27,7 @@
 			<key>NSExtensionActivationRule</key>
 			<dict>
 				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
-				<integer>5</integer>
+				<integer>12</integer>
 			</dict>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>
@@ -38,6 +38,7 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
 	</array>
 </dict>
 </plist>
