@@ -13,9 +13,9 @@ class ShareImageCollectionCell: UICollectionViewCell {
 	@IBOutlet weak var imageView: UIImageView!
 	
 	func configure(image: UIImage) {
-        self.imageView.layer.cornerRadius = 10
-        self.imageView.clipsToBounds = true
-        self.imageView.contentMode = .scaleAspectFill
+        //self.imageView.layer.cornerRadius = 10
+        //self.imageView.clipsToBounds = true
+        self.imageView.contentMode = .scaleAspectFit
 		self.imageView.image = image
 	}
 }
