@@ -180,14 +180,6 @@ extension BestViewController {
             self.mainTitle.trailingAnchor.constraint(equalTo: self.view.layoutMarginsGuide.trailingAnchor),
             self.mainTitle.heightAnchor.constraint(equalToConstant: 35),
             
-//            // leftContainerView constraints
-//            self.leftContainerView.heightAnchor.constraint(equalToConstant: self.view.frame.size.width / 3.0),
-//            self.leftContainerView.widthAnchor.constraint(equalTo: self.leftContainerView.heightAnchor, multiplier: 1.0),
-//
-//            // rightContainerView constraints
-//            self.rightContainerView.heightAnchor.constraint(equalToConstant: self.view.frame.size.width / 3.0),
-//            self.rightContainerView.widthAnchor.constraint(equalTo: self.rightContainerView.heightAnchor, multiplier: 1.0),
-            
             // leftBestPhoto constraints
             self.leftBestPhoto.leadingAnchor.constraint(equalTo: self.leftContainerView.leadingAnchor),
             self.leftBestPhoto.bottomAnchor.constraint(equalTo: self.leftContainerView.bottomAnchor),
@@ -274,8 +266,6 @@ extension BestViewController {
             
             
             navigateToBetterestVC()
-            
-            //self.finalAnimationOnTop(better: self.rightContainerView, worse: self.leftContainerView)
         default:
             let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
             self.graph.addEdge(source: self.vertices[rightPhoto]!, sink: self.vertices[leftPhoto]!, weight: 1)
@@ -284,8 +274,6 @@ extension BestViewController {
                 
                 self.leftBestPhoto.image = photos.0
                 self.rightBestPhoto.image = photos.1
-                
-                //self.animatePhotosOnTap(better: rightContainerView, worse: leftContainerView, photos: photos)
             }
         }
     }
@@ -345,7 +333,6 @@ extension BestViewController {
         }, completion: nil)
         
         CATransaction.commit()
-        
     }
     
     func finalAnimationOnTop(better: UIView, worse: UIView) {

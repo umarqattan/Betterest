@@ -10,9 +10,7 @@ import Foundation
 import UIKit
 
 extension Notification.Name {
-    
     static let DidFinishPickingPhotos = Notification.Name(rawValue: "DidFinishPickingPhotos")
-    
 }
 
 extension UIViewController {
