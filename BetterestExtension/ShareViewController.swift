@@ -12,7 +12,7 @@ import MobileCoreServices
 
 class ShareViewController: UIViewController {
     
-    let sharedKey = "ImageSharePhotoKey"
+    let sharedKey = Keys.sharedKey
     
     var selectedImages: [UIImage] = []
     var imagesData: [Data] = []
@@ -23,7 +23,7 @@ class ShareViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
-        collectionView.register(ShareImageCollectionCell.self, forCellWithReuseIdentifier: "ShareImageCollectionCell")
+        collectionView.register(ShareImageCollectionCell.self, forCellWithReuseIdentifier: Identifiers.SelectedPhotosCollectionView.cellIdentifier)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -32,25 +32,14 @@ class ShareViewController: UIViewController {
         return collectionView
     }()
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        debugPrint("Rotation: \(self.numberOfRotations)")
-        self.numberOfRotations += 1
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        debugPrint("Rotation: \(self.numberOfRotations)")
 
-
-        
         self.view.backgroundColor = UIColor.white
         self.setupViews()
         self.applyConstraints()
     
-        self.navigationItem.title = "Selected Images"
+        self.navigationItem.title = Identifiers.ShareViewController.navigationTitle
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelAction(_:)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(nextAction(_:)))
     }
@@ -128,7 +117,7 @@ class ShareViewController: UIViewController {
                             if index == (content.attachments?.count)! - 1 {
                                 DispatchQueue.main.async {
                                     this.selectedPhotosCollectionView.reloadData()
-                                    let userDefaults = UserDefaults(suiteName: "group.ukaton.Betterest")
+                                    let userDefaults = UserDefaults(suiteName: Keys.suiteName)
                                     userDefaults?.set(this.imagesData, forKey: this.sharedKey)
                                     userDefaults?.synchronize()
                                 }
@@ -163,14 +152,13 @@ extension ShareViewController: UICollectionViewDelegate, UICollectionViewDataSou
         
         return Styler.SelectedPhotosCollectionView.cellSize(collectionView.frame)
     }
-
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.selectedImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ShareImageCollectionCell", for: indexPath) as! ShareImageCollectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.SelectedPhotosCollectionView.cellIdentifier, for: indexPath) as! ShareImageCollectionCell
         cell.configure(image: selectedImages[indexPath.row])
         return cell
     }
@@ -185,16 +173,7 @@ extension ShareViewController: UICollectionViewDelegate, UICollectionViewDataSou
 }
 
 extension UIImage {
-    class func resizeImage(image: UIImage, width: CGFloat, height: CGFloat) -> UIImage {
-        UIGraphicsBeginImageContext(CGSize(width: width, height: height))
-        image.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage!
-    }
-    
     class func scaleImage(image: UIImage, maxDimension: CGFloat) -> UIImage {
-        
         var scaledSize = CGSize(width: maxDimension, height: maxDimension)
         var scaleFactor: CGFloat
         

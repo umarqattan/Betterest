@@ -12,6 +12,8 @@
 		E10614FD216177F0006924AE /* AppUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10614FC216177F0006924AE /* AppUtility.swift */; };
 		E11BD1DE21686B0300302CB9 /* ShareExtensionStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1DD21686B0300302CB9 /* ShareExtensionStyler.swift */; };
 		E11BD1E021686D8D00302CB9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1DF21686D8D00302CB9 /* Extensions.swift */; };
+		E11BD1E22169EAFB00302CB9 /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1E12169EAFB00302CB9 /* Animations.swift */; };
+		E11BD1E42169EC8C00302CB9 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1E32169EC8C00302CB9 /* Keys.swift */; };
 		E16217B521463BD60076B088 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217B421463BD60076B088 /* Extensions.swift */; };
 		E16217B721463C590076B088 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217B621463C590076B088 /* Keys.swift */; };
 		E16217B921463DF90076B088 /* BestestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217B821463DF90076B088 /* BestestViewController.swift */; };
@@ -69,11 +71,11 @@
 		A19B0F01B4A6E67C7057B887 /* Pods-Betterest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Betterest.release.xcconfig"; path = "Pods/Target Support Files/Pods-Betterest/Pods-Betterest.release.xcconfig"; sourceTree = "<group>"; };
 		BDB8476071D6A9C22220D32F /* Pods_Betterest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Betterest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10614E721601939006924AE /* Pods_Betterest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Betterest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E10614F021601C14006924AE /* BetterestKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BetterestKit.h; sourceTree = "<group>"; };
-		E10614F121601C14006924AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E10614FC216177F0006924AE /* AppUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUtility.swift; sourceTree = "<group>"; };
 		E11BD1DD21686B0300302CB9 /* ShareExtensionStyler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionStyler.swift; sourceTree = "<group>"; };
 		E11BD1DF21686D8D00302CB9 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		E11BD1E12169EAFB00302CB9 /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
+		E11BD1E32169EC8C00302CB9 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		E16217B421463BD60076B088 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E16217B621463C590076B088 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		E16217B821463DF90076B088 /* BestestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BestestViewController.swift; sourceTree = "<group>"; };
@@ -128,19 +130,11 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		E10614EF21601C14006924AE /* BetterestKit */ = {
-			isa = PBXGroup;
-			children = (
-				E10614F021601C14006924AE /* BetterestKit.h */,
-				E10614F121601C14006924AE /* Info.plist */,
-			);
-			path = BetterestKit;
-			sourceTree = "<group>";
-		};
 		E10614FB216177E0006924AE /* Modules */ = {
 			isa = PBXGroup;
 			children = (
 				E10614FC216177F0006924AE /* AppUtility.swift */,
+				E11BD1E12169EAFB00302CB9 /* Animations.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -155,6 +149,7 @@
 				E1A18106214ED54A00E981E2 /* Info.plist */,
 				E11BD1DD21686B0300302CB9 /* ShareExtensionStyler.swift */,
 				E11BD1DF21686D8D00302CB9 /* Extensions.swift */,
+				E11BD1E32169EC8C00302CB9 /* Keys.swift */,
 			);
 			path = BetterestExtension;
 			sourceTree = "<group>";
@@ -165,7 +160,6 @@
 				E16217FE214E08280076B088 /* MyPlayground.playground */,
 				E1D8AC672145C60C0034E76E /* Betterest */,
 				E1A18100214ED54A00E981E2 /* BetterestExtension */,
-				E10614EF21601C14006924AE /* BetterestKit */,
 				E1D8AC662145C60C0034E76E /* Products */,
 				799906B287E8BEA0A07C32BD /* Pods */,
 				E444DFA781782D84865D6EF3 /* Frameworks */,
@@ -371,6 +365,7 @@
 				E1A18102214ED54A00E981E2 /* ShareViewController.swift in Sources */,
 				E1A18115214F388800E981E2 /* ShareImageCollectionCell.swift in Sources */,
 				E11BD1E021686D8D00302CB9 /* Extensions.swift in Sources */,
+				E11BD1E42169EC8C00302CB9 /* Keys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +382,7 @@
 				E16217C1214CCED50076B088 /* PhotoTableViewCell.swift in Sources */,
 				E1D8AC692145C60C0034E76E /* AppDelegate.swift in Sources */,
 				E16217B921463DF90076B088 /* BestestViewController.swift in Sources */,
+				E11BD1E22169EAFB00302CB9 /* Animations.swift in Sources */,
 				E1BDAFBD215866F100594367 /* PHPhotoLibraryExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -51,6 +51,5 @@ class ShareImageCollectionCell: UICollectionViewCell {
     
     fileprivate func applyStyles() {
         self.contentView.layer.borderColor = Styler.SelectedPhotosCollectionView.borderColor
-        
     }
 }
