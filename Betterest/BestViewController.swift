@@ -7,13 +7,8 @@
 //
 
 import UIKit
-import Social
-import MobileCoreServices
 
 class BestViewController: UIViewController {
-    
-    // MARK: - SLComposeService Properties
-    fileprivate var sharedIdentifier = Identifiers.SHARED
     
     // MARK: - Photos Properties
     var photos = [UIImage]()
@@ -23,7 +18,6 @@ class BestViewController: UIViewController {
     var graph = Graph(isDirected: true)
     var vertices = [UIImage: Vertex]()
 
-    
     private var mainTitle: UILabel = {
         let label = UILabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -34,36 +28,6 @@ class BestViewController: UIViewController {
         label.textAlignment = .center
         
         return label
-    }()
-    
-    private var remainingPhotosLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 16.0)
-        label.textAlignment = .center
-        
-        return label
-    }()
-    
-    private var leftContainerView: UIView = {
-        let view = UIView(frame: .zero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
-        view.clipsToBounds = true
-        
-        return view
-    }()
-    
-    private var rightContainerView: UIView = {
-        let view = UIView(frame: .zero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
-        view.clipsToBounds = true
-        
-        return view
     }()
     
     private var leftBestPhoto: UIImageView = {
@@ -87,7 +51,7 @@ class BestViewController: UIViewController {
         return imageView
     }()
     
-    private var horizontalPhotoStackView: UIStackView = {
+    private var photoStackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.isUserInteractionEnabled = true
@@ -97,18 +61,6 @@ class BestViewController: UIViewController {
         
         return stackView
     }()
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        AppUtility.lockOrientation(.landscapeLeft, andRotateTo: .landscapeLeft)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        AppUtility.lockOrientation(.allButUpsideDown)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,6 +92,30 @@ class BestViewController: UIViewController {
         self.applyStyles()
         self.initializePhotos()
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if UIScreen.main.orientation == .portrait {
+            self.photoStackView.axis = .vertical
+            self.photoStackView.removeArrangedSubview(self.leftBestPhoto)
+            self.photoStackView.removeArrangedSubview(self.rightBestPhoto)
+            self.photoStackView.addArrangedSubview(self.leftBestPhoto)
+            self.photoStackView.addArrangedSubview(self.rightBestPhoto)
+        } else if UIScreen.main.orientation == .landscapeRight {
+            self.photoStackView.axis = .horizontal
+            self.photoStackView.removeArrangedSubview(self.leftBestPhoto)
+            self.photoStackView.removeArrangedSubview(self.rightBestPhoto)
+            self.photoStackView.addArrangedSubview(self.leftBestPhoto)
+            self.photoStackView.addArrangedSubview(self.rightBestPhoto)
+        } else if UIScreen.main.orientation == .landscapeLeft {
+            self.photoStackView.axis = .horizontal
+            self.photoStackView.removeArrangedSubview(self.leftBestPhoto)
+            self.photoStackView.removeArrangedSubview(self.rightBestPhoto)
+            self.photoStackView.addArrangedSubview(self.rightBestPhoto)
+            self.photoStackView.addArrangedSubview(self.leftBestPhoto)
+        }
+    }
 }
 
 extension BestViewController {
@@ -161,15 +137,9 @@ extension BestViewController {
     
     fileprivate func setupViews() {
         self.view.addSubview(self.mainTitle)
-        self.view.addSubview(self.leftContainerView)
-        self.view.addSubview(self.rightContainerView)
-        
-        self.leftContainerView.addSubview(self.leftBestPhoto)
-        self.rightContainerView.addSubview(self.rightBestPhoto)
-        
-        self.horizontalPhotoStackView.addArrangedSubview(self.leftContainerView)
-        self.horizontalPhotoStackView.addArrangedSubview(self.rightContainerView)
-        self.view.addSubview(self.horizontalPhotoStackView)
+        self.view.addSubview(self.photoStackView)
+        self.photoStackView.addArrangedSubview(self.leftBestPhoto)
+        self.photoStackView.addArrangedSubview(self.rightBestPhoto)
     }
     
     fileprivate func applyConstraints() {
@@ -180,33 +150,25 @@ extension BestViewController {
             self.mainTitle.trailingAnchor.constraint(equalTo: self.view.layoutMarginsGuide.trailingAnchor),
             self.mainTitle.heightAnchor.constraint(equalToConstant: 35),
             
-            // leftBestPhoto constraints
-            self.leftBestPhoto.leadingAnchor.constraint(equalTo: self.leftContainerView.leadingAnchor),
-            self.leftBestPhoto.bottomAnchor.constraint(equalTo: self.leftContainerView.bottomAnchor),
-            self.leftBestPhoto.trailingAnchor.constraint(equalTo: self.leftContainerView.trailingAnchor),
-            self.leftBestPhoto.topAnchor.constraint(equalTo: self.leftContainerView.topAnchor),
-
-            // rightBestPhoto constraints
-            self.rightBestPhoto.leadingAnchor.constraint(equalTo: self.rightContainerView.leadingAnchor),
-            self.rightBestPhoto.bottomAnchor.constraint(equalTo: self.rightContainerView.bottomAnchor),
-            self.rightBestPhoto.trailingAnchor.constraint(equalTo: self.rightContainerView.trailingAnchor),
-            self.rightBestPhoto.topAnchor.constraint(equalTo: self.rightContainerView.topAnchor),
+            // photoStackView constraints
+            self.photoStackView.topAnchor.constraint(equalTo: self.mainTitle.bottomAnchor),
+            self.photoStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.photoStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.photoStackView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             
-            // horizontalPhotoStackView constraints
-            self.horizontalPhotoStackView.topAnchor.constraint(equalTo: self.mainTitle.bottomAnchor),
-            self.horizontalPhotoStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            self.horizontalPhotoStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            self.horizontalPhotoStackView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            // leftBestPhoto constraints
+            self.leftBestPhoto.widthAnchor.constraint(equalToConstant: (self.view.frame.width - 10) / 2.0),
+            self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor, multiplier: 1.0),
+            
+            // rightBestPhoto constraints
+            self.rightBestPhoto.widthAnchor.constraint(equalToConstant: (self.view.frame.width - 10) / 2.0),
+            self.rightBestPhoto.heightAnchor.constraint(equalTo: self.rightBestPhoto.widthAnchor, multiplier: 1.0)
         ])
     }
     
     fileprivate func applyStyles() {
         // mainTitle style
         self.mainTitle.text = Titles.BETTEREST
-    
-        // left and right containerView styles
-        self.leftContainerView.layer.cornerRadius = 5
-        self.rightContainerView.layer.cornerRadius = 5
     }
     
     fileprivate func initializePhotos() {
@@ -240,18 +202,13 @@ extension BestViewController {
                 self.rightBestPhoto.image = rightPhoto
             } else {
                 navigateToBetterestVC()
-                //self.finalAnimationOnTop(better: self.leftContainerView, worse: self.rightContainerView)
             }
         default:
             let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
             self.graph.addEdge(source: self.vertices[leftPhoto]!, sink: self.vertices[rightPhoto]!, weight: 1)
-            
             if let photos = self.photoPairs.first {
-                
                 self.leftBestPhoto.image = photos.0
                 self.rightBestPhoto.image = photos.1
-                
-                //self.animatePhotosOnTap(better: self.leftContainerView, worse: self.rightContainerView, photos: photos)
             }
         }
     }
@@ -263,123 +220,15 @@ extension BestViewController {
         case 1:
             let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
             self.graph.addEdge(source: self.vertices[rightPhoto]!, sink: self.vertices[leftPhoto]!, weight: 1)
-            
-            
             navigateToBetterestVC()
         default:
             let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
             self.graph.addEdge(source: self.vertices[rightPhoto]!, sink: self.vertices[leftPhoto]!, weight: 1)
-            
             if let photos = self.photoPairs.first {
-                
                 self.leftBestPhoto.image = photos.0
                 self.rightBestPhoto.image = photos.1
             }
         }
-    }
-    
-    func animatePhotosOnTap(better: UIView, worse: UIView, photos: (UIImage, UIImage)) {
-        
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(0.4)
-        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeIn))
-        
-        // worseView layer borderWidth animation
-        let worseLayerBorderWidthAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderWidth))
-        worseLayerBorderWidthAnimation.fromValue = CGFloat(0.5)
-        worseLayerBorderWidthAnimation.toValue = CGFloat(3.0)
-        worse.layer.borderWidth = CGFloat(3.0)
-        worse.layer.add(worseLayerBorderWidthAnimation, forKey: "worse borderWidth")
-        
-        // worseView layer borderColor animation
-        let worseLayerBorderColorAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderColor))
-        worseLayerBorderColorAnimation.fromValue = UIColor(red: 151/255.0, green: 151/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
-        worseLayerBorderColorAnimation.toValue = UIColor.red.cgColor
-        worse.layer.borderColor = UIColor.red.cgColor
-        worse.layer.add(worseLayerBorderColorAnimation, forKey: "worse borderColor")
-        
-        // betterView layer borderWidth animation
-        let betterLayerBorderWidthAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderWidth))
-        betterLayerBorderWidthAnimation.fromValue = CGFloat(0.5)
-        betterLayerBorderWidthAnimation.toValue = CGFloat(3.0)
-        better.layer.borderWidth = CGFloat(3.0)
-        better.layer.add(betterLayerBorderWidthAnimation, forKey: "better borderWidth")
-        
-        // betterView layer borderColor animation
-        let betterLayerBorderColorAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderColor))
-        betterLayerBorderColorAnimation.fromValue = UIColor(red: 151/255.0, green: 151/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
-        betterLayerBorderColorAnimation.toValue = UIColor.green.cgColor
-        better.layer.borderColor = UIColor.green.cgColor
-        better.layer.add(betterLayerBorderColorAnimation, forKey: "better borderColor")
-        
-        UIView.animate(withDuration: 0.6, delay: 0.6, options: .curveEaseOut, animations: {
-            self.horizontalPhotoStackView.center.y += self.view.frame.size.height
-            
-        }, completion: { (Bool) in
-            
-            self.leftBestPhoto.image = photos.0
-            self.rightBestPhoto.image = photos.1
-            self.horizontalPhotoStackView.center.y -= 2 * self.view.frame.size.height
-            worse.layer.borderWidth = 0.5
-            worse.layer.borderColor = UIColor(red: 151/255.0, green: 151/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
-            better.layer.borderWidth = 0.5
-            better.layer.borderColor = UIColor(red: 151/255.0, green: 151/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
-            
-        })
-        
-        UIView.animate(withDuration: 0.4, delay: 1.0, options: .curveEaseInOut, animations: {
-            self.horizontalPhotoStackView.center.y += self.view.frame.size.height
-
-        }, completion: nil)
-        
-        CATransaction.commit()
-    }
-    
-    func finalAnimationOnTop(better: UIView, worse: UIView) {
-        
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(0.4)
-        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeIn))
-        
-        // worseView layer borderWidth animation
-        let worseLayerBorderWidthAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderWidth))
-        worseLayerBorderWidthAnimation.fromValue = CGFloat(0.5)
-        worseLayerBorderWidthAnimation.toValue = CGFloat(3.0)
-        worse.layer.borderWidth = CGFloat(3.0)
-        worse.layer.add(worseLayerBorderWidthAnimation, forKey: "worse borderWidth")
-        
-        // worseView layer borderColor animation
-        let worseLayerBorderColorAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderColor))
-        worseLayerBorderColorAnimation.fromValue = UIColor(red: 151/255.0, green: 151/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
-        worseLayerBorderColorAnimation.toValue = UIColor.red.cgColor
-        worse.layer.borderColor = UIColor.red.cgColor
-        worse.layer.add(worseLayerBorderColorAnimation, forKey: "worse borderColor")
-        
-        // betterView layer borderWidth animation
-        let betterLayerBorderWidthAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderWidth))
-        betterLayerBorderWidthAnimation.fromValue = CGFloat(0.5)
-        betterLayerBorderWidthAnimation.toValue = CGFloat(3.0)
-        better.layer.borderWidth = CGFloat(3.0)
-        better.layer.add(betterLayerBorderWidthAnimation, forKey: "better borderWidth")
-        
-        // betterView layer borderColor animation
-        let betterLayerBorderColorAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderColor))
-        betterLayerBorderColorAnimation.fromValue = UIColor(red: 151/255.0, green: 151/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
-        betterLayerBorderColorAnimation.toValue = UIColor.green.cgColor
-        better.layer.borderColor = UIColor.green.cgColor
-        better.layer.add(betterLayerBorderColorAnimation, forKey: "better borderColor")
-        
-        // animate the photoStackView to fade into the top left
-        UIView.animate(withDuration: 0.4, delay: 0.6, options: .curveEaseOut, animations: {
-            self.horizontalPhotoStackView.alpha = 0.0
-            self.horizontalPhotoStackView.center.y += self.view.frame.size.height
-        }, completion: { (Bool) in
-            let bestestVC = BestestViewController()
-            bestestVC.images = self.graph.pageRank(iterations: 20)
-            self.navigationController?.pushViewController(bestestVC, animated: true)
-        })
-        
-        CATransaction.commit()
     }
     
     func navigateToBetterestVC() {
