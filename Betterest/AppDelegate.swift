@@ -15,13 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    // Global orientationLock
-    var orientationLock = UIInterfaceOrientationMask.allButUpsideDown
-    
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        return self.orientationLock
-    }
-    
+//    //Global orientationLock
+    var orientationLock = UIInterfaceOrientationMask.portrait
+
+//    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+//        return self.orientationLock
+//    }
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
     
@@ -36,7 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup main HomeViewController as the rootViewController of the UINavigationController
         let vc = HomeViewController()
         let mainNavigationController = UINavigationController(rootViewController: vc)
-        
         
         // Create a new window for Bestest.app
         self.window = UIWindow(frame: UIScreen.main.bounds)
@@ -67,8 +66,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 
 extension AppDelegate {
