@@ -17,18 +17,6 @@ class BestViewController: UIViewController {
     // MARK: - PageRank Graph Properties
     var graph = Graph(isDirected: true)
     var vertices = [UIImage: Vertex]()
-
-    private var mainTitle: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 24.0)
-        label.textAlignment = .center
-        
-        return label
-    }()
     
     private var leftBestPhoto: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -55,12 +43,18 @@ class BestViewController: UIViewController {
         let stackView = UIStackView(frame: .zero)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.isUserInteractionEnabled = true
-        stackView.axis = .horizontal
+        stackView.axis = .vertical
         stackView.distribution = .fillEqually
         stackView.spacing = 0
         
         return stackView
     }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.photoStackView.axis = UIScreen.main.orientation.isLandscape ? .horizontal : .vertical
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,28 +87,31 @@ class BestViewController: UIViewController {
         self.initializePhotos()
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         
-        if UIScreen.main.orientation == .portrait {
-            self.photoStackView.axis = .vertical
-            self.photoStackView.removeArrangedSubview(self.leftBestPhoto)
-            self.photoStackView.removeArrangedSubview(self.rightBestPhoto)
-            self.photoStackView.addArrangedSubview(self.leftBestPhoto)
-            self.photoStackView.addArrangedSubview(self.rightBestPhoto)
-        } else if UIScreen.main.orientation == .landscapeRight {
-            self.photoStackView.axis = .horizontal
-            self.photoStackView.removeArrangedSubview(self.leftBestPhoto)
-            self.photoStackView.removeArrangedSubview(self.rightBestPhoto)
-            self.photoStackView.addArrangedSubview(self.leftBestPhoto)
-            self.photoStackView.addArrangedSubview(self.rightBestPhoto)
-        } else if UIScreen.main.orientation == .landscapeLeft {
-            self.photoStackView.axis = .horizontal
-            self.photoStackView.removeArrangedSubview(self.leftBestPhoto)
-            self.photoStackView.removeArrangedSubview(self.rightBestPhoto)
-            self.photoStackView.addArrangedSubview(self.rightBestPhoto)
-            self.photoStackView.addArrangedSubview(self.leftBestPhoto)
-        }
+        coordinator.animate(alongsideTransition: { _ in
+            let deltaTransform = coordinator.targetTransform
+            let deltaAngle: CGFloat = atan2(deltaTransform.b, deltaTransform.a)
+            var currentRotation = self.photoStackView.layer.value(forKeyPath: "transform.rotation.z") as! CGFloat
+
+            currentRotation += -1 * deltaAngle + 0.0001
+            self.photoStackView.layer.setValue(currentRotation, forKeyPath: "transform.rotation.z")
+            self.leftBestPhoto.transform = CGAffineTransform(rotationAngle: -currentRotation)
+            self.rightBestPhoto.transform = CGAffineTransform(rotationAngle: -currentRotation)
+            
+        }, completion: { _ in
+            
+            var currentTransform: CGAffineTransform = self.photoStackView.transform
+            currentTransform.a = round(currentTransform.a)
+            currentTransform.b = round(currentTransform.b)
+            currentTransform.c = round(currentTransform.c)
+            currentTransform.d = round(currentTransform.d)
+            self.photoStackView.transform = currentTransform
+            
+        })
+        UIView.setAnimationsEnabled(false)
+        
+        super.viewWillTransition(to: size, with: coordinator)
     }
 }
 
@@ -136,7 +133,6 @@ extension BestViewController {
 extension BestViewController {
     
     fileprivate func setupViews() {
-        self.view.addSubview(self.mainTitle)
         self.view.addSubview(self.photoStackView)
         self.photoStackView.addArrangedSubview(self.leftBestPhoto)
         self.photoStackView.addArrangedSubview(self.rightBestPhoto)
@@ -144,31 +140,19 @@ extension BestViewController {
     
     fileprivate func applyConstraints() {
         NSLayoutConstraint.activate([
-            // mainTitle constraints
-            self.mainTitle.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor),
-            self.mainTitle.leadingAnchor.constraint(equalTo: self.view.layoutMarginsGuide.leadingAnchor),
-            self.mainTitle.trailingAnchor.constraint(equalTo: self.view.layoutMarginsGuide.trailingAnchor),
-            self.mainTitle.heightAnchor.constraint(equalToConstant: 35),
-            
-            // photoStackView constraints
-            self.photoStackView.topAnchor.constraint(equalTo: self.mainTitle.bottomAnchor),
-            self.photoStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            self.photoStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            self.photoStackView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            
-            // leftBestPhoto constraints
-            self.leftBestPhoto.widthAnchor.constraint(equalToConstant: (self.view.frame.width - 10) / 2.0),
-            self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor, multiplier: 1.0),
-            
-            // rightBestPhoto constraints
-            self.rightBestPhoto.widthAnchor.constraint(equalToConstant: (self.view.frame.width - 10) / 2.0),
-            self.rightBestPhoto.heightAnchor.constraint(equalTo: self.rightBestPhoto.widthAnchor, multiplier: 1.0)
+
+            self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+
+            self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+            self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+            self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+            self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
         ])
     }
     
     fileprivate func applyStyles() {
-        // mainTitle style
-        self.mainTitle.text = Titles.BETTEREST
+        
     }
     
     fileprivate func initializePhotos() {

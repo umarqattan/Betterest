@@ -54,14 +54,6 @@ class HomeViewController: UIViewController {
         } else {
             return
         }
-        
-        
-    
-//        self.imagePicker = OpalImagePickerController()
-//        self.imagePicker?.imagePickerDelegate = self
-//
-//        self.addObservers()
-//        self.selectPhotos()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -140,7 +132,6 @@ extension HomeViewController {
         }
         
         self.navigationController?.pushViewController(bestVC, animated: false)
-        
     }
     
     @objc func selectPhotos(_ sender: UIButton) {
