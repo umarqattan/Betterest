@@ -54,7 +54,7 @@ extension BestestViewController {
     
     fileprivate func applyConstraints() {
         NSLayoutConstraint.activate([
-            // tableView constraints
+            // tableView UITableView constraints
             self.tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
             self.tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),

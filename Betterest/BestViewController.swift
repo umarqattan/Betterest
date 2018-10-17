@@ -18,6 +18,33 @@ class BestViewController: UIViewController {
     var graph = Graph(isDirected: true)
     var vertices = [UIImage: Vertex]()
     
+    // MARK: - Private Properties
+    private var leftScrollView: UIScrollView = {
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = false
+        scrollView.alwaysBounceHorizontal = false
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.flashScrollIndicators()
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 10.0
+        
+        return scrollView
+    }()
+    
+    private var rightScrollView: UIScrollView = {
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = false
+        scrollView.alwaysBounceHorizontal = false
+        scrollView.flashScrollIndicators()
+        
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 10.0
+        
+        return scrollView
+    }()
+    
     private var leftBestPhoto: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -50,6 +77,44 @@ class BestViewController: UIViewController {
         return stackView
     }()
     
+    // MARK: Setup
+    fileprivate func setupViews() {
+        self.view.addSubview(self.photoStackView)
+        self.leftScrollView.addSubview(self.leftBestPhoto)
+        self.rightScrollView.addSubview(self.rightBestPhoto)
+        self.photoStackView.addArrangedSubview(self.leftScrollView)
+        self.photoStackView.addArrangedSubview(self.rightScrollView)
+    }
+    
+    fileprivate func applyConstraints() {
+        NSLayoutConstraint.activate([
+            // photoStackView UIStackView constraints
+            self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            
+            // leftScrollView UIScrollView constraints
+            self.leftScrollView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+            self.leftScrollView.heightAnchor.constraint(equalTo: self.leftScrollView.widthAnchor),
+            
+            // rightScrollView UIScrollView constraints
+            self.rightScrollView.widthAnchor.constraint(equalTo: self.leftScrollView.widthAnchor),
+            self.rightScrollView.heightAnchor.constraint(equalTo: self.leftScrollView.heightAnchor),
+            
+            // leftBestPhoto UIImageView constraints
+            self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+            self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+            
+            // rightBestPhoto UIImageView constraints
+            self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+            self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
+        ])
+    }
+    
+    fileprivate func applyStyles() {
+        
+    }
+    
+    // MARK: View Life Cycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -81,12 +146,16 @@ class BestViewController: UIViewController {
         self.leftBestPhoto.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(leftBestPhotoTapped(_:))))
         self.rightBestPhoto.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(rightBestPhotoTapped(_:))))
         
+        self.leftScrollView.delegate = self
+        self.rightScrollView.delegate = self
+        
         self.setupViews()
         self.applyConstraints()
         self.applyStyles()
         self.initializePhotos()
     }
     
+    // MARK: Transitions
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         
         coordinator.animate(alongsideTransition: { _ in
@@ -96,8 +165,8 @@ class BestViewController: UIViewController {
 
             currentRotation += -1 * deltaAngle + 0.0001
             self.photoStackView.layer.setValue(currentRotation, forKeyPath: "transform.rotation.z")
-            self.leftBestPhoto.transform = CGAffineTransform(rotationAngle: -currentRotation)
-            self.rightBestPhoto.transform = CGAffineTransform(rotationAngle: -currentRotation)
+            self.leftScrollView.transform = CGAffineTransform(rotationAngle: -currentRotation)
+            self.rightScrollView.transform = CGAffineTransform(rotationAngle: -currentRotation)
             
         }, completion: { _ in
             
@@ -113,9 +182,8 @@ class BestViewController: UIViewController {
         
         super.viewWillTransition(to: size, with: coordinator)
     }
-}
 
-extension BestViewController {
+    // MARK: Initialize Photos
     fileprivate func generatePhotoPairs(photos: [UIImage]) -> [(UIImage, UIImage)] {
         var photoPairs = [(UIImage, UIImage)]()
         for x in 0...photos.count-1 {
@@ -128,32 +196,6 @@ extension BestViewController {
         
         return photoPairs
     }
-}
-
-extension BestViewController {
-    
-    fileprivate func setupViews() {
-        self.view.addSubview(self.photoStackView)
-        self.photoStackView.addArrangedSubview(self.leftBestPhoto)
-        self.photoStackView.addArrangedSubview(self.rightBestPhoto)
-    }
-    
-    fileprivate func applyConstraints() {
-        NSLayoutConstraint.activate([
-
-            self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-
-            self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.width),
-            self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-            self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-            self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
-        ])
-    }
-    
-    fileprivate func applyStyles() {
-        
-    }
     
     fileprivate func initializePhotos() {
         guard self.photos.count > 1 else {
@@ -163,7 +205,7 @@ extension BestViewController {
         
         self.photos.forEach({self.vertices[$0] = self.graph.addVertex(key: $0)})
         self.photoPairs = self.generatePhotoPairs(photos: self.photos)
-    
+        
         if self.photoPairs.count > 0 {
             if let (leftPhoto, rightPhoto) = self.photoPairs.first {
                 self.leftBestPhoto.image = leftPhoto
@@ -172,6 +214,7 @@ extension BestViewController {
         }
     }
     
+    // MARK: Selectors
     @objc func leftBestPhotoTapped(_ recognizer: UITapGestureRecognizer) {
         
         switch self.photoPairs.count {
@@ -221,3 +264,17 @@ extension BestViewController {
         self.navigationController?.pushViewController(bestestVC, animated: true)
     }
 }
+
+// MARK: UIScrollViewDelegate
+extension BestViewController: UIScrollViewDelegate {
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return scrollView == leftScrollView ? leftBestPhoto : rightBestPhoto
+    }
+
+}
+
+
+
+
+
