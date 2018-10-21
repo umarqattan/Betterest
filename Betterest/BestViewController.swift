@@ -87,40 +87,71 @@ class BestViewController: UIViewController {
     }
     
     fileprivate func applyConstraints() {
-        NSLayoutConstraint.activate([
-            // photoStackView UIStackView constraints
-            self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-            
-            // leftScrollView UIScrollView constraints
-            self.leftScrollView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
-            self.leftScrollView.heightAnchor.constraint(equalTo: self.leftScrollView.widthAnchor),
-            
-            // rightScrollView UIScrollView constraints
-            self.rightScrollView.widthAnchor.constraint(equalTo: self.leftScrollView.widthAnchor),
-            self.rightScrollView.heightAnchor.constraint(equalTo: self.leftScrollView.heightAnchor),
-            
-            // leftBestPhoto UIImageView constraints
-            self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.width),
-            self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-            
-            // rightBestPhoto UIImageView constraints
-            self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-            self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
-        ])
+        
+        if UIScreen.main.orientation.isLandscape {
+            self.photoStackView.axis = .horizontal
+            NSLayoutConstraint.activate([
+                // photoStackView UIStackView constraints
+                self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+                self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+
+
+                // leftScrollView UIScrollView constraints
+                self.leftScrollView.widthAnchor.constraint(equalToConstant: self.view.bounds.height),
+                self.leftScrollView.heightAnchor.constraint(equalToConstant: self.view.bounds.height),
+
+                // rightScrollView UIScrollView constraints
+                self.rightScrollView.widthAnchor.constraint(equalToConstant: self.view.bounds.height),
+                self.rightScrollView.heightAnchor.constraint(equalToConstant: self.view.bounds.height),
+
+                // leftBestPhoto UIImageView constraints
+                self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.height),
+                self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+                self.leftBestPhoto.centerXAnchor.constraint(equalTo: self.leftScrollView.centerXAnchor),
+                self.leftBestPhoto.centerYAnchor.constraint(equalTo: self.leftScrollView.centerYAnchor),
+
+                // rightBestPhoto UIImageView constraints
+                self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+                self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
+                self.rightBestPhoto.centerXAnchor.constraint(equalTo: self.rightScrollView.centerXAnchor),
+                self.rightBestPhoto.centerYAnchor.constraint(equalTo: self.rightScrollView.centerYAnchor),
+            ])
+        } else {
+            self.photoStackView.axis = .vertical
+            NSLayoutConstraint.activate([
+                // photoStackView UIStackView constraints
+                self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+                self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+                
+                // leftScrollView UIScrollView constraints
+                self.leftScrollView.widthAnchor.constraint(equalToConstant: self.view.bounds.width),
+                self.leftScrollView.heightAnchor.constraint(equalToConstant: self.view.bounds.width),
+                
+                // rightScrollView UIScrollView constraints
+                self.rightScrollView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+                self.rightScrollView.heightAnchor.constraint(equalToConstant: self.view.frame.width),
+
+                // leftBestPhoto UIImageView constraints
+                self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+                self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+                self.leftBestPhoto.centerXAnchor.constraint(equalTo: self.leftScrollView.centerXAnchor),
+                self.leftBestPhoto.centerYAnchor.constraint(equalTo: self.leftScrollView.centerYAnchor),
+
+                // rightBestPhoto UIImageView constraints
+                self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
+                self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
+                self.rightBestPhoto.centerXAnchor.constraint(equalTo: self.rightScrollView.centerXAnchor),
+                self.rightBestPhoto.centerYAnchor.constraint(equalTo: self.rightScrollView.centerYAnchor),
+
+            ])
+        }
     }
-    
+
     fileprivate func applyStyles() {
         
     }
     
     // MARK: View Life Cycle
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        self.photoStackView.axis = UIScreen.main.orientation.isLandscape ? .horizontal : .vertical
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -157,7 +188,7 @@ class BestViewController: UIViewController {
     
     // MARK: Transitions
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        
+
         coordinator.animate(alongsideTransition: { _ in
             let deltaTransform = coordinator.targetTransform
             let deltaAngle: CGFloat = atan2(deltaTransform.b, deltaTransform.a)
@@ -167,7 +198,6 @@ class BestViewController: UIViewController {
             self.photoStackView.layer.setValue(currentRotation, forKeyPath: "transform.rotation.z")
             self.leftScrollView.transform = CGAffineTransform(rotationAngle: -currentRotation)
             self.rightScrollView.transform = CGAffineTransform(rotationAngle: -currentRotation)
-            
         }, completion: { _ in
             
             var currentTransform: CGAffineTransform = self.photoStackView.transform
@@ -176,13 +206,13 @@ class BestViewController: UIViewController {
             currentTransform.c = round(currentTransform.c)
             currentTransform.d = round(currentTransform.d)
             self.photoStackView.transform = currentTransform
-            
         })
         UIView.setAnimationsEnabled(false)
-        
         super.viewWillTransition(to: size, with: coordinator)
+        //self.applyConstraints()
     }
-
+    
+    
     // MARK: Initialize Photos
     fileprivate func generatePhotoPairs(photos: [UIImage]) -> [(UIImage, UIImage)] {
         var photoPairs = [(UIImage, UIImage)]()

@@ -20,6 +20,7 @@
 		E16217BD214A03860076B088 /* BestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217BC214A03860076B088 /* BestViewController.swift */; };
 		E16217BF214A13AF0076B088 /* Rank.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217BE214A13AF0076B088 /* Rank.swift */; };
 		E16217C1214CCED50076B088 /* PhotoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16217C0214CCED50076B088 /* PhotoTableViewCell.swift */; };
+		E18AAD84217BDFB2008ADDA6 /* KRScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18AAD83217BDFB2008ADDA6 /* KRScrollView.swift */; };
 		E1966A592150B1BE00C592DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D8AC6F2145C60D0034E76E /* Assets.xcassets */; };
 		E1A18102214ED54A00E981E2 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A18101214ED54A00E981E2 /* ShareViewController.swift */; };
 		E1A18105214ED54A00E981E2 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E1A18103214ED54A00E981E2 /* MainInterface.storyboard */; };
@@ -83,6 +84,7 @@
 		E16217BE214A13AF0076B088 /* Rank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rank.swift; sourceTree = "<group>"; };
 		E16217C0214CCED50076B088 /* PhotoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoTableViewCell.swift; sourceTree = "<group>"; };
 		E16217FE214E08280076B088 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		E18AAD83217BDFB2008ADDA6 /* KRScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KRScrollView.swift; sourceTree = "<group>"; };
 		E1A180FF214ED54A00E981E2 /* BetterestExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BetterestExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1A18101214ED54A00E981E2 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		E1A18104214ED54A00E981E2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 				E16217BE214A13AF0076B088 /* Rank.swift */,
 				E16217C0214CCED50076B088 /* PhotoTableViewCell.swift */,
 				E1BDAFBC215866F100594367 /* PHPhotoLibraryExtension.swift */,
+				E18AAD83217BDFB2008ADDA6 /* KRScrollView.swift */,
 			);
 			path = Betterest;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				E16217BF214A13AF0076B088 /* Rank.swift in Sources */,
 				E10614FD216177F0006924AE /* AppUtility.swift in Sources */,
 				E16217B721463C590076B088 /* Keys.swift in Sources */,
+				E18AAD84217BDFB2008ADDA6 /* KRScrollView.swift in Sources */,
 				E16217BD214A03860076B088 /* BestViewController.swift in Sources */,
 				E16217B521463BD60076B088 /* Extensions.swift in Sources */,
 				E16217C1214CCED50076B088 /* PhotoTableViewCell.swift in Sources */,
