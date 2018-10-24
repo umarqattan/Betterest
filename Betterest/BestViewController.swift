@@ -13,10 +13,12 @@ class BestViewController: UIViewController {
     // MARK: - Photos Properties
     var photos = [UIImage]()
     var photoPairs = [(UIImage, UIImage)]()
+    var flag: Bool = false
     
     // MARK: - PageRank Graph Properties
     var graph = Graph(isDirected: true)
     var vertices = [UIImage: Vertex]()
+    
     
     // MARK: - Private Properties
     private var leftScrollView: UIScrollView = {
@@ -45,106 +47,30 @@ class BestViewController: UIViewController {
         return scrollView
     }()
     
-    private var leftBestPhoto: UIImageView = {
-        let imageView = UIImageView(frame: .zero)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.isUserInteractionEnabled = true
-        imageView.contentMode = .scaleAspectFill
-    
-        imageView.layer.masksToBounds = true
+    private var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .white
+        collectionView.isScrollEnabled = false
+        collectionView.register(BetterestCollectionViewCell.self, forCellWithReuseIdentifier: Identifiers.BETTEREST_CELL_ITEM)
         
-        return imageView
+        return collectionView
     }()
-    
-    private var rightBestPhoto: UIImageView = {
-        let imageView = UIImageView(frame: .zero)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.isUserInteractionEnabled = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.masksToBounds = true
-        
-        return imageView
-    }()
-    
-    private var photoStackView: UIStackView = {
-        let stackView = UIStackView(frame: .zero)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.isUserInteractionEnabled = true
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.spacing = 0
-        
-        return stackView
-    }()
-    
+  
     // MARK: Setup
     fileprivate func setupViews() {
-        self.view.addSubview(self.photoStackView)
-        self.leftScrollView.addSubview(self.leftBestPhoto)
-        self.rightScrollView.addSubview(self.rightBestPhoto)
-        self.photoStackView.addArrangedSubview(self.leftScrollView)
-        self.photoStackView.addArrangedSubview(self.rightScrollView)
+        self.view.addSubview(self.collectionView)
     }
     
     fileprivate func applyConstraints() {
-        
-        if UIScreen.main.orientation.isLandscape {
-            self.photoStackView.axis = .horizontal
-            NSLayoutConstraint.activate([
-                // photoStackView UIStackView constraints
-                self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-
-
-                // leftScrollView UIScrollView constraints
-                self.leftScrollView.widthAnchor.constraint(equalToConstant: self.view.bounds.height),
-                self.leftScrollView.heightAnchor.constraint(equalToConstant: self.view.bounds.height),
-
-                // rightScrollView UIScrollView constraints
-                self.rightScrollView.widthAnchor.constraint(equalToConstant: self.view.bounds.height),
-                self.rightScrollView.heightAnchor.constraint(equalToConstant: self.view.bounds.height),
-
-                // leftBestPhoto UIImageView constraints
-                self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.height),
-                self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-                self.leftBestPhoto.centerXAnchor.constraint(equalTo: self.leftScrollView.centerXAnchor),
-                self.leftBestPhoto.centerYAnchor.constraint(equalTo: self.leftScrollView.centerYAnchor),
-
-                // rightBestPhoto UIImageView constraints
-                self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-                self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
-                self.rightBestPhoto.centerXAnchor.constraint(equalTo: self.rightScrollView.centerXAnchor),
-                self.rightBestPhoto.centerYAnchor.constraint(equalTo: self.rightScrollView.centerYAnchor),
-            ])
-        } else {
-            self.photoStackView.axis = .vertical
-            NSLayoutConstraint.activate([
-                // photoStackView UIStackView constraints
-                self.photoStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                self.photoStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-                
-                // leftScrollView UIScrollView constraints
-                self.leftScrollView.widthAnchor.constraint(equalToConstant: self.view.bounds.width),
-                self.leftScrollView.heightAnchor.constraint(equalToConstant: self.view.bounds.width),
-                
-                // rightScrollView UIScrollView constraints
-                self.rightScrollView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
-                self.rightScrollView.heightAnchor.constraint(equalToConstant: self.view.frame.width),
-
-                // leftBestPhoto UIImageView constraints
-                self.leftBestPhoto.widthAnchor.constraint(equalToConstant: self.view.frame.width),
-                self.leftBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-                self.leftBestPhoto.centerXAnchor.constraint(equalTo: self.leftScrollView.centerXAnchor),
-                self.leftBestPhoto.centerYAnchor.constraint(equalTo: self.leftScrollView.centerYAnchor),
-
-                // rightBestPhoto UIImageView constraints
-                self.rightBestPhoto.widthAnchor.constraint(equalTo: self.leftBestPhoto.widthAnchor),
-                self.rightBestPhoto.heightAnchor.constraint(equalTo: self.leftBestPhoto.heightAnchor),
-                self.rightBestPhoto.centerXAnchor.constraint(equalTo: self.rightScrollView.centerXAnchor),
-                self.rightBestPhoto.centerYAnchor.constraint(equalTo: self.rightScrollView.centerYAnchor),
-
-            ])
-        }
+        NSLayoutConstraint.activate([
+            self.collectionView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
     }
 
     fileprivate func applyStyles() {
@@ -156,6 +82,8 @@ class BestViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = .clear
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .cancel,
@@ -165,18 +93,9 @@ class BestViewController: UIViewController {
         
         self.photoPairs = generatePhotoPairs(photos: photos)
         
-        if self.photoPairs.count >= 1,
-            let (leftPhoto, rightPhoto) = self.photoPairs.first {
-            self.leftBestPhoto.image = leftPhoto
-            self.rightBestPhoto.image = rightPhoto
-        }
-        
         self.view.backgroundColor = .white
         self.navigationItem.title = NavigationTitles.BEST
-        
-        self.leftBestPhoto.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(leftBestPhotoTapped(_:))))
-        self.rightBestPhoto.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(rightBestPhotoTapped(_:))))
-        
+
         self.leftScrollView.delegate = self
         self.rightScrollView.delegate = self
         
@@ -186,31 +105,30 @@ class BestViewController: UIViewController {
         self.initializePhotos()
     }
     
-    // MARK: Transitions
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-
-        coordinator.animate(alongsideTransition: { _ in
-            let deltaTransform = coordinator.targetTransform
-            let deltaAngle: CGFloat = atan2(deltaTransform.b, deltaTransform.a)
-            var currentRotation = self.photoStackView.layer.value(forKeyPath: "transform.rotation.z") as! CGFloat
-
-            currentRotation += -1 * deltaAngle + 0.0001
-            self.photoStackView.layer.setValue(currentRotation, forKeyPath: "transform.rotation.z")
-            self.leftScrollView.transform = CGAffineTransform(rotationAngle: -currentRotation)
-            self.rightScrollView.transform = CGAffineTransform(rotationAngle: -currentRotation)
-        }, completion: { _ in
-            
-            var currentTransform: CGAffineTransform = self.photoStackView.transform
-            currentTransform.a = round(currentTransform.a)
-            currentTransform.b = round(currentTransform.b)
-            currentTransform.c = round(currentTransform.c)
-            currentTransform.d = round(currentTransform.d)
-            self.photoStackView.transform = currentTransform
-        })
-        UIView.setAnimationsEnabled(false)
-        super.viewWillTransition(to: size, with: coordinator)
-        //self.applyConstraints()
-    }
+//    // MARK: Transitions
+//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+//
+//        coordinator.animate(alongsideTransition: { _ in
+//            let deltaTransform = coordinator.targetTransform
+//            let deltaAngle: CGFloat = atan2(deltaTransform.b, deltaTransform.a)
+//            var currentRotation = self.collectionView.layer.value(forKeyPath: "transform.rotation.z") as! CGFloat
+//
+//            currentRotation += -1 * deltaAngle + 0.0001
+//            self.collectionView.layer.setValue(currentRotation, forKeyPath: "transform.rotation.z")
+//            self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0))?.transform = CGAffineTransform(rotationAngle: -currentRotation)
+//            self.collectionView.cellForItem(at: IndexPath(item: 1, section: 0))?.transform = CGAffineTransform(rotationAngle: -currentRotation)
+//            }, completion: { _ in
+//
+//            var currentTransform: CGAffineTransform = self.collectionView.transform
+//            currentTransform.a = round(currentTransform.a)
+//            currentTransform.b = round(currentTransform.b)
+//            currentTransform.c = round(currentTransform.c)
+//            currentTransform.d = round(currentTransform.d)
+//            self.collectionView.transform = currentTransform
+//        })
+//        UIView.setAnimationsEnabled(false)
+//        super.viewWillTransition(to: size, with: coordinator)
+//    }
     
     
     // MARK: Initialize Photos
@@ -235,57 +153,6 @@ class BestViewController: UIViewController {
         
         self.photos.forEach({self.vertices[$0] = self.graph.addVertex(key: $0)})
         self.photoPairs = self.generatePhotoPairs(photos: self.photos)
-        
-        if self.photoPairs.count > 0 {
-            if let (leftPhoto, rightPhoto) = self.photoPairs.first {
-                self.leftBestPhoto.image = leftPhoto
-                self.rightBestPhoto.image = rightPhoto
-            }
-        }
-    }
-    
-    // MARK: Selectors
-    @objc func leftBestPhotoTapped(_ recognizer: UITapGestureRecognizer) {
-        
-        switch self.photoPairs.count {
-        case 0:
-            return
-        case 1:
-            let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
-            self.graph.addEdge(source: self.vertices[leftPhoto]!, sink: self.vertices[rightPhoto]!, weight: 1)
-            
-            if let (leftPhoto, rightPhoto) = self.photoPairs.first {
-                self.leftBestPhoto.image = leftPhoto
-                self.rightBestPhoto.image = rightPhoto
-            } else {
-                navigateToBetterestVC()
-            }
-        default:
-            let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
-            self.graph.addEdge(source: self.vertices[leftPhoto]!, sink: self.vertices[rightPhoto]!, weight: 1)
-            if let photos = self.photoPairs.first {
-                self.leftBestPhoto.image = photos.0
-                self.rightBestPhoto.image = photos.1
-            }
-        }
-    }
-    
-    @objc func rightBestPhotoTapped(_ recognizer: UITapGestureRecognizer) {
-        switch self.photoPairs.count {
-        case 0:
-            return
-        case 1:
-            let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
-            self.graph.addEdge(source: self.vertices[rightPhoto]!, sink: self.vertices[leftPhoto]!, weight: 1)
-            navigateToBetterestVC()
-        default:
-            let (leftPhoto, rightPhoto) = self.photoPairs.removeFirst()
-            self.graph.addEdge(source: self.vertices[rightPhoto]!, sink: self.vertices[leftPhoto]!, weight: 1)
-            if let photos = self.photoPairs.first {
-                self.leftBestPhoto.image = photos.0
-                self.rightBestPhoto.image = photos.1
-            }
-        }
     }
     
     func navigateToBetterestVC() {
@@ -295,14 +162,140 @@ class BestViewController: UIViewController {
     }
 }
 
-// MARK: UIScrollViewDelegate
-extension BestViewController: UIScrollViewDelegate {
+// MARK: UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
+
+extension BestViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return scrollView == leftScrollView ? leftBestPhoto : rightBestPhoto
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.BETTEREST_CELL_ITEM, for: indexPath) as! BetterestCollectionViewCell
+        
+        if let (leftPhoto, rightPhoto) = self.photoPairs.first {
+            if indexPath.item == 0 {
+                cell.configure(image: leftPhoto)
+            } else {
+                cell.configure(image: rightPhoto)
+            }
+        }
+        return cell
+    }
+    
+    func getImagesFromCells() -> (UIImage, UIImage)? {
+        guard let leftItem = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? BetterestCollectionViewCell,
+            let rightItem = self.collectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? BetterestCollectionViewCell,
+            let leftImage = leftItem.getImage(),
+            let rightImage = rightItem.getImage() else { return nil }
+        return (leftImage, rightImage)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let (newLeftPhoto, newRightPhoto) = self.photoPairs.removeFirst()
+        
+        if let currentPhotos = self.getImagesFromCells() {
+            if indexPath.item == 0 {
+                self.graph.addEdge(
+                    source: self.vertices[currentPhotos.0]!,
+                    sink: self.vertices[currentPhotos.1]!,
+                    weight: 1)
+            } else {
+                self.graph.addEdge(
+                    source: self.vertices[currentPhotos.1]!,
+                    sink: self.vertices[currentPhotos.0]!,
+                    weight: 1
+                )
+            }
+        }
+    
+        if let photos = self.photoPairs.first {
+            let leftCell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as! BetterestCollectionViewCell
+            let rightCell = collectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as! BetterestCollectionViewCell
+            leftCell.configure(image: newLeftPhoto)
+            rightCell.configure(image: newRightPhoto)
+            leftCell.resetZoom()
+            rightCell.resetZoom()
+            collectionView.reloadData()
+        } else {
+            navigateToBetterestVC()
+        }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        var width = CGFloat(0)
+        var height = CGFloat(0)
+        if UIScreen.main.orientation.isPortrait {
+            let newLayout = collectionViewLayout as! UICollectionViewFlowLayout
+            newLayout.scrollDirection = .vertical
+            width = collectionView.bounds.size.width
+            height = (collectionView.bounds.size.height - 64) / 2.0
+        } else {
+            let newLayout = collectionViewLayout as! UICollectionViewFlowLayout
+            newLayout.scrollDirection = .horizontal
+            width = collectionView.bounds.size.width / 2.0
+            height = collectionView.bounds.size.height
+        }
+        return CGSize(width: width, height: height)
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        
+        switch UIScreen.main.orientation {
+        case .landscapeLeft:
+            self.flag = true
+            self.swapCells(
+                from: IndexPath(item: 0, section: 0),
+                to: IndexPath(item: 1, section: 0)
+            )
+        case .landscapeRight:
+            break // noop
+        case .portrait:
+            if self.flag {
+                self.swapCells(
+                    from: IndexPath(item: 1, section: 0),
+                    to: IndexPath(item: 0, section: 0)
+                )
+                self.flag = false
+            }
+        default:
+            break
+        }
+        
+        super.traitCollectionDidChange(previousTraitCollection)
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        let newLayout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        newLayout.scrollDirection = (newLayout.scrollDirection == .horizontal) ? .vertical : .horizontal
+
+        super.willTransition(to: newCollection, with: coordinator)
+        UIView.setAnimationsEnabled(false)
+    }
+    
+    func swapCells(from: IndexPath, to: IndexPath) {
+        guard let fromItem = self.collectionView.cellForItem(at: from) as? BetterestCollectionViewCell,
+            let toItem = self.collectionView.cellForItem(at: to) as? BetterestCollectionViewCell,
+            let fromImage = fromItem.getImage(),
+            let toImage = toItem.getImage() else { return }
+
+            fromItem.configure(image: toImage)
+            toItem.configure(image: fromImage)
+    }
 }
+
 
 
 

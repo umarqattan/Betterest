@@ -32,6 +32,7 @@ struct Labels {
 struct Identifiers {
     static let BETTEREST_CELL = "BetterestCell"
     static let SHARED = "group.ukaton.Betterest"
+    static let BETTEREST_CELL_ITEM = "BetterestCellItem"
 }
 
 struct NotificationKeys {
