@@ -13,42 +13,17 @@ class BestViewController: UIViewController {
     // MARK: - Photos Properties
     var photos = [UIImage]()
     var photoPairs = [(UIImage, UIImage)]()
-    var flag: Bool = false
     
     // MARK: - PageRank Graph Properties
     var graph = Graph(isDirected: true)
     var vertices = [UIImage: Vertex]()
     
-    
+    // MARK: - Cell properties
+    var flag: Bool = false
+
     // MARK: - Private Properties
-    private var leftScrollView: UIScrollView = {
-        let scrollView = UIScrollView(frame: .zero)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.alwaysBounceVertical = false
-        scrollView.alwaysBounceHorizontal = false
-        scrollView.showsVerticalScrollIndicator = true
-        scrollView.flashScrollIndicators()
-        scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 10.0
-        
-        return scrollView
-    }()
-    
-    private var rightScrollView: UIScrollView = {
-        let scrollView = UIScrollView(frame: .zero)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.alwaysBounceVertical = false
-        scrollView.alwaysBounceHorizontal = false
-        scrollView.flashScrollIndicators()
-        
-        scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 10.0
-        
-        return scrollView
-    }()
-    
     private var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = BetterestCollectionViewCellFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -95,41 +70,12 @@ class BestViewController: UIViewController {
         
         self.view.backgroundColor = .white
         self.navigationItem.title = NavigationTitles.BEST
-
-        self.leftScrollView.delegate = self
-        self.rightScrollView.delegate = self
         
         self.setupViews()
         self.applyConstraints()
         self.applyStyles()
         self.initializePhotos()
     }
-    
-//    // MARK: Transitions
-//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-//
-//        coordinator.animate(alongsideTransition: { _ in
-//            let deltaTransform = coordinator.targetTransform
-//            let deltaAngle: CGFloat = atan2(deltaTransform.b, deltaTransform.a)
-//            var currentRotation = self.collectionView.layer.value(forKeyPath: "transform.rotation.z") as! CGFloat
-//
-//            currentRotation += -1 * deltaAngle + 0.0001
-//            self.collectionView.layer.setValue(currentRotation, forKeyPath: "transform.rotation.z")
-//            self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0))?.transform = CGAffineTransform(rotationAngle: -currentRotation)
-//            self.collectionView.cellForItem(at: IndexPath(item: 1, section: 0))?.transform = CGAffineTransform(rotationAngle: -currentRotation)
-//            }, completion: { _ in
-//
-//            var currentTransform: CGAffineTransform = self.collectionView.transform
-//            currentTransform.a = round(currentTransform.a)
-//            currentTransform.b = round(currentTransform.b)
-//            currentTransform.c = round(currentTransform.c)
-//            currentTransform.d = round(currentTransform.d)
-//            self.collectionView.transform = currentTransform
-//        })
-//        UIView.setAnimationsEnabled(false)
-//        super.viewWillTransition(to: size, with: coordinator)
-//    }
-    
     
     // MARK: Initialize Photos
     fileprivate func generatePhotoPairs(photos: [UIImage]) -> [(UIImage, UIImage)] {
@@ -168,7 +114,6 @@ extension BestViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.BETTEREST_CELL_ITEM, for: indexPath) as! BetterestCollectionViewCell
-        
         if let (leftPhoto, rightPhoto) = self.photoPairs.first {
             if indexPath.item == 0 {
                 cell.configure(image: leftPhoto)
@@ -205,7 +150,7 @@ extension BestViewController: UICollectionViewDataSource, UICollectionViewDelega
             }
         }
     
-        if let photos = self.photoPairs.first {
+        if let _ = self.photoPairs.first {
             let leftCell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as! BetterestCollectionViewCell
             let rightCell = collectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as! BetterestCollectionViewCell
             leftCell.configure(image: newLeftPhoto)
@@ -238,43 +183,55 @@ extension BestViewController: UICollectionViewDataSource, UICollectionViewDelega
         var width = CGFloat(0)
         var height = CGFloat(0)
         if UIScreen.main.orientation.isPortrait {
-            let newLayout = collectionViewLayout as! UICollectionViewFlowLayout
+            let newLayout = collectionViewLayout as! BetterestCollectionViewCellFlowLayout
             newLayout.scrollDirection = .vertical
             width = collectionView.bounds.size.width
             height = (collectionView.bounds.size.height - 64) / 2.0
-        } else {
-            let newLayout = collectionViewLayout as! UICollectionViewFlowLayout
+        } else if UIScreen.main.orientation.isLandscape {
+            let newLayout = collectionViewLayout as! BetterestCollectionViewCellFlowLayout
             newLayout.scrollDirection = .horizontal
-            width = collectionView.bounds.size.width / 2.0
+            width = (collectionView.bounds.size.width) / 2.0
             height = collectionView.bounds.size.height
         }
         return CGSize(width: width, height: height)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        
-        switch UIScreen.main.orientation {
-        case .landscapeLeft:
-            self.flag = true
-            self.swapCells(
-                from: IndexPath(item: 0, section: 0),
-                to: IndexPath(item: 1, section: 0)
-            )
-        case .landscapeRight:
-            break // noop
-        case .portrait:
-            if self.flag {
-                self.swapCells(
-                    from: IndexPath(item: 1, section: 0),
-                    to: IndexPath(item: 0, section: 0)
-                )
-                self.flag = false
-            }
-        default:
-            break
-        }
-        
-        super.traitCollectionDidChange(previousTraitCollection)
+//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//
+//        switch UIScreen.main.orientation {
+//        case .landscapeLeft:
+//            self.flag = true
+//            self.collectionView.moveItem(
+//                at: IndexPath(item: 0, section: 0),
+//                to: IndexPath(item: 1, section: 0)
+//            )
+//        case .landscapeRight:
+//            break // noop
+//        case .portrait:
+//            if self.flag {
+//                self.collectionView.moveItem(
+//                    at: IndexPath(item: 1, section: 0),
+//                    to: IndexPath(item: 0, section: 0)
+//                )
+//
+//                self.flag = false
+//            }
+//        default:
+//            break
+//        }
+//
+//
+//        UIView.setAnimationsEnabled(false)
+//        self.collectionView.reloadData()
+//        super.traitCollectionDidChange(previousTraitCollection)
+//    }
+
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return true
     }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -294,6 +251,14 @@ extension BestViewController: UICollectionViewDataSource, UICollectionViewDelega
             fromItem.configure(image: toImage)
             toItem.configure(image: fromImage)
     }
+}
+
+class BetterestCollectionViewCellFlowLayout: UICollectionViewFlowLayout {
+    
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        return true
+    }
+    
 }
 
 

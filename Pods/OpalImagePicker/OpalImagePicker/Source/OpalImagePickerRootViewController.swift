@@ -97,7 +97,6 @@ open class OpalImagePickerRootViewController: UIViewController {
     
     internal lazy var fetchOptions: PHFetchOptions = {
         let fetchOptions = PHFetchOptions()
-        
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         return fetchOptions
     }()
@@ -234,7 +233,7 @@ open class OpalImagePickerRootViewController: UIViewController {
             let mediaSubtypes = NSPredicate(format: "mediaSubtypes = %d", allowedMediaSubtypes.rawValue)
             predicates += [mediaSubtypes]
         }
-            
+        
         if predicates.count > 0 {
             let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
             fetchOptions.predicate = predicate
@@ -253,8 +252,13 @@ open class OpalImagePickerRootViewController: UIViewController {
         super.viewDidLoad()
         setup()
         
-        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Select 2 Or More Photos", comment: "")
-
+        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Photos", comment: "")
+        
+        let cancelButtonTitle = configuration?.cancelButtonTitle ?? NSLocalizedString("Cancel", comment: "")
+        let cancelButton = UIBarButtonItem(title: cancelButtonTitle, style: .plain, target: self, action: #selector(cancelTapped))
+        navigationItem.leftBarButtonItem = cancelButton
+        self.cancelButton = cancelButton
+        
         let doneButtonTitle = configuration?.doneButtonTitle ?? NSLocalizedString("Done", comment: "")
         let doneButton = UIBarButtonItem(title: doneButtonTitle, style: .done, target: self, action: #selector(doneTapped))
         navigationItem.rightBarButtonItem = doneButton
@@ -273,13 +277,8 @@ open class OpalImagePickerRootViewController: UIViewController {
         
         let indexPathsForSelectedItems = selectedIndexPaths
         let externalIndexPaths = externalSelectedIndexPaths
-        guard indexPathsForSelectedItems.count + externalIndexPaths.count > 0 && indexPathsForSelectedItems.count > 1 else {
-            let message = NSLocalizedString("You must select at least 2 photos to compare.", comment: "You must select more than 2 photos to compare against.")
-            let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
-            let okayString = configuration?.okayString ?? NSLocalizedString("OK", comment: "OK")
-            let action = UIAlertAction(title: okayString, style: .cancel, handler: nil)
-            alert.addAction(action)
-            present(alert, animated: true, completion: nil)
+        guard indexPathsForSelectedItems.count + externalIndexPaths.count > 0 else {
+            cancelTapped()
             return
         }
         
@@ -366,8 +365,8 @@ open class OpalImagePickerRootViewController: UIViewController {
         photoAssets = PHAsset.fetchAssets(with: fetchOptions)
         
         var indexPaths: [IndexPath] = []
-        for i in oldFetchLimit..<photoAssets.count {
-            indexPaths += [IndexPath(item: i, section: 0)]
+        for item in oldFetchLimit..<photoAssets.count {
+            indexPaths += [IndexPath(item: item, section: 0)]
         }
         collectionView?.insertItems(at: indexPaths)
     }
