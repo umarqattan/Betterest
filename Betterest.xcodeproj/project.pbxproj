@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		030582A3F305BF555181EFDE /* Pods_Betterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E10614E721601939006924AE /* Pods_Betterest.framework */; };
 		323E9C4BD29C6DEB4A3DF02A /* Pods_Betterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDB8476071D6A9C22220D32F /* Pods_Betterest.framework */; };
-		E10614E821601939006924AE /* Pods_Betterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E10614E721601939006924AE /* Pods_Betterest.framework */; };
 		E10614FD216177F0006924AE /* AppUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10614FC216177F0006924AE /* AppUtility.swift */; };
 		E11BD1DE21686B0300302CB9 /* ShareExtensionStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1DD21686B0300302CB9 /* ShareExtensionStyler.swift */; };
 		E11BD1E021686D8D00302CB9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11BD1DF21686D8D00302CB9 /* Extensions.swift */; };
@@ -108,7 +108,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E10614E821601939006924AE /* Pods_Betterest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,6 +116,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				323E9C4BD29C6DEB4A3DF02A /* Pods_Betterest.framework in Frameworks */,
+				030582A3F305BF555181EFDE /* Pods_Betterest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,7 +593,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FC1A22901CBAC4A521DEB77B /* Pods-Betterest.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Betterest.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -614,7 +613,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A19B0F01B4A6E67C7057B887 /* Pods-Betterest.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Betterest.entitlements;
 				CODE_SIGN_STYLE = Automatic;

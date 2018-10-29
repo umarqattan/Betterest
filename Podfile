@@ -8,5 +8,4 @@ target 'Betterest' do
   # Pods for Betterest
   pod 'OpalImagePicker'
 
-
 end
